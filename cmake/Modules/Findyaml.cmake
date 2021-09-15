@@ -1,0 +1,25 @@
+# Check if CMake config file is installed
+include(FindPackageHandleStandardArgs)
+find_package(yaml CONFIG QUIET)
+if(yaml_FOUND)
+  find_package_handle_standard_args(yaml FOUND_VAR yaml_FOUND CONFIG_MODE)
+else()
+  # Otherwise, rely on pkg-config
+  find_package(PkgConfig QUIET)
+
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(YAML_PKG_CONFIG IMPORTED_TARGET yaml-0.1)
+    find_package_handle_standard_args(yaml DEFAULT_MSG YAML_PKG_CONFIG_FOUND)
+
+    if(NOT TARGET yaml)
+      add_library(yaml INTERFACE IMPORTED)
+      set_property(TARGET yaml PROPERTY INTERFACE_LINK_LIBRARIES PkgConfig::YAML_PKG_CONFIG)
+    endif()
+    if(NOT yaml_LIBRARIES)
+      set(yaml_LIBRARIES yaml)
+    endif()
+    if(NOT yaml_VERSION)
+      set(yaml_VERSION ${YAML_PKG_CONFIG_VERSION})
+    endif()
+  endif()
+endif()
