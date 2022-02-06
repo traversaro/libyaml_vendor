@@ -19,6 +19,7 @@ option(FORCE_BUILD_VENDOR_PKG
   OFF)
 
 find_package(ament_cmake REQUIRED)
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
 if(NOT FORCE_BUILD_VENDOR_PKG)
   find_package(yaml QUIET)
@@ -108,7 +109,6 @@ if(NOT _SKIP_YAML_BUILD)
   set(extra_test_dependencies libyaml-0.2.5)
 endif()
 
-ament_export_libraries(yaml)
 ament_export_dependencies(yaml)
 
 if(BUILD_TESTING)
@@ -154,5 +154,7 @@ if(BUILD_TESTING)
     endif()
   endif()
 endif()
+
+install(DIRECTORY cmake DESTINATION share/${PROJECT_NAME})
 
 ament_package(CONFIG_EXTRAS libyaml_vendor-extras.cmake)
